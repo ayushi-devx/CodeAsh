@@ -113,40 +113,86 @@ JUDGE0_URL=http://localhost:2358
 # JUDGE0_API_URL=https://judge0-ce.p.rapidapi.com
 ```
 
-## Judge0 Setup (Local Docker)
+## Judge0 Setup (AWS EC2 Production Server)
 
-### ✅ Redis Fix Applied
-The Redis authentication issue has been fixed. Judge0 now works without Redis password.
+### ✅ Current Configuration
+Your Judge0 server is running on AWS EC2 Ubuntu at `http://100.53.209.86:2358`
 
-### Start Judge0
-```bash
-cd ../judge0
-docker-compose down
-docker-compose up -d
+**Supported Languages (22+):**
+- JavaScript (Node.js 12.14.0) - ID: 63
+- Python (3.8.1) - ID: 71
+- Java (OpenJDK 13.0.1) - ID: 62
+- C++ (GCC 9.2.0) - ID: 54
+- C (GCC 9.2.0) - ID: 50
+- C# (Mono 6.6.0.161) - ID: 51
+- Go (1.13.5) - ID: 60
+- Rust (1.40.0) - ID: 73
+- Kotlin (1.3.70) - ID: 78
+- Swift (5.2.3) - ID: 83
+- TypeScript (3.7.4) - ID: 74
+- PHP (7.4.1) - ID: 68
+- Ruby (2.7.0) - ID: 72
+- And 10+ more languages...
+
+### Backend Configuration
+
+**backend/.env:**
+```env
+# AWS EC2 Judge0 Server (Production)
+JUDGE0_LOCAL=true
+JUDGE0_URL=http://100.53.209.86:2358
+ENABLE_FALLBACK_EXECUTOR=false
 ```
 
-### Verify Judge0 is Running
-```bash
-# Check containers
-docker ps
+### Benefits of AWS Judge0:
+- ✅ **22+ Programming Languages** - Full language support
+- ✅ **Production Grade** - Proper isolation and security
+- ✅ **Scalable** - Handle multiple concurrent executions
+- ✅ **Reliable** - Linux environment with proper cgroups
+- ✅ **Fast** - Dedicated server resources
 
-# Test API
-curl http://localhost:2358/about
+### Testing AWS Judge0
+
+```bash
+# Test from your local machine
+curl http://100.53.209.86:2358/about
 
 # Test code execution
-curl -X POST http://localhost:2358/submissions?wait=true ^
-  -H "Content-Type: application/json" ^
-  -d "{\"source_code\":\"console.log('test')\",\"language_id\":63}"
+curl -X POST http://100.53.209.86:2358/submissions?wait=true \
+  -H "Content-Type: application/json" \
+  -d '{"source_code":"console.log(\"Hello AWS Judge0\")","language_id":63}'
+```
+
+### AWS Server Management
+
+**SSH to your EC2 instance:**
+```bash
+ssh -i your-key.pem ubuntu@100.53.209.86
+```
+
+**Check Judge0 status:**
+```bash
+cd ~/judge0
+docker ps
+docker-compose logs judge0-server-1
+```
+
+**Restart if needed:**
+```bash
+docker-compose restart
 ```
 
 ### Troubleshooting
-If you get errors, check logs:
-```bash
-docker logs judge0
-docker logs judge0-redis
-```
 
-See `../judge0/REDIS_FIX.md` for detailed troubleshooting.
+**If Judge0 fails:**
+1. Backend automatically uses fallback executor for JavaScript/Python/Go
+2. Check AWS EC2 instance resources (CPU/Memory)
+3. Verify Security Group allows port 2358
+4. Check Judge0 container logs
+
+**AWS Security Group Requirements:**
+- Inbound Rule: Port 2358, Source: 0.0.0.0/0 (or your IP range)
+- Outbound Rules: All traffic allowed
 
 ## Database Collections
 

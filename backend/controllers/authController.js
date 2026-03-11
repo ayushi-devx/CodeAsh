@@ -114,8 +114,61 @@ export const getMe = async (req, res) => {
   }
 };
 
+// Google Login/Register
+export const googleAuth = async (req, res) => {
+  try {
+    const { email, firstName, googleId, photoURL } = req.body;
+
+    if (!email || !googleId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email and Google ID are required'
+      });
+    }
+
+    // Check if user exists
+    let user = await User.findOne({ email });
+
+    if (user) {
+      // User exists, update Google ID if not set
+      if (!user.googleId) {
+        user.googleId = googleId;
+        if (photoURL) user.photoURL = photoURL;
+        await user.save();
+      }
+    } else {
+      // Create new user
+      user = await User.create({
+        firstName: firstName || email.split('@')[0],
+        email,
+        googleId,
+        photoURL,
+        password: Math.random().toString(36).slice(-8) // Random password for Google users
+      });
+    }
+
+    res.json({
+      success: true,
+      data: {
+        _id: user._id,
+        firstName: user.firstName,
+        email: user.email,
+        photoURL: user.photoURL,
+        token: generateToken(user._id)
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error with Google authentication',
+      error: error.message
+    });
+  }
+};
+
 export default {
   register,
   login,
-  getMe
+  getMe,
+  googleAuth
 };

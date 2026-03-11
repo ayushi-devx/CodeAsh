@@ -47,6 +47,11 @@ const problemSchema = new mongoose.Schema({
     type: String,
     trim: true
   }],
+  externalLinks: {
+    leetcode: String,
+    gfg: String,
+    youtube: String
+  },
   acceptanceRate: {
     type: Number,
     default: 0,
@@ -91,6 +96,7 @@ const problemSchema = new mongoose.Schema({
     default: 0
   },
   videoUrl: String,
+  coderArmyVideo: String,
   discussionCount: {
     type: Number,
     default: 0

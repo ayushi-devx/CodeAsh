@@ -127,10 +127,10 @@ const ProblemsList = ({ onSelectProblem }) => {
                 {/* Table Header */}
                 <div className="grid grid-cols-12 gap-4 px-6 py-4 border-b border-white/10 text-gray-400 text-sm font-medium">
                     <div className="col-span-1">Status</div>
-                    <div className="col-span-5">Title</div>
+                    <div className="col-span-4">Title</div>
+                    <div className="col-span-2">Links</div>
                     <div className="col-span-2">Difficulty</div>
-                    <div className="col-span-2">Acceptance</div>
-                    <div className="col-span-2">Tags</div>
+                    <div className="col-span-3">Tags</div>
                 </div>
 
                 {/* Table Body */}
@@ -157,21 +157,62 @@ const ProblemsList = ({ onSelectProblem }) => {
                                 <div className="col-span-1 flex items-center">
                                     {getStatusIcon(problem.status || 'unsolved')}
                                 </div>
-                                <div className="col-span-5 flex items-center">
+                                <div className="col-span-4 flex items-center">
                                     <span className="text-white group-hover:text-green-400 transition-colors font-medium">
                                         {problem.order || problem.id}. {problem.title}
                                     </span>
+                                </div>
+                                <div className="col-span-2 flex items-center gap-2">
+                                    {problem.externalLinks?.leetcode && (
+                                        <a
+                                            href={problem.externalLinks.leetcode}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            onClick={(e) => e.stopPropagation()}
+                                            className="p-2 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 rounded-lg transition-all hover:scale-110"
+                                            title="LeetCode"
+                                        >
+                                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.35 5.35 0 0 0-.125.513 5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017 5.938 5.938 0 0 0 1.271 1.818l4.277 4.193.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392c.54-.54.54-1.414.003-1.955a1.378 1.378 0 0 0-1.951-.003l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263a2.68 2.68 0 0 1 .066-.523 2.545 2.545 0 0 1 .619-1.164L9.13 8.114c1.058-1.134 3.204-1.27 4.43-.278l3.501 2.831c.593.48 1.461.387 1.94-.207a1.384 1.384 0 0 0-.207-1.943l-3.5-2.831c-.8-.647-1.766-1.045-2.774-1.202l2.015-2.158A1.384 1.384 0 0 0 13.483 0zm-2.866 12.815a1.38 1.38 0 0 0-1.38 1.382 1.38 1.38 0 0 0 1.38 1.382H20.79a1.38 1.38 0 0 0 1.38-1.382 1.38 1.38 0 0 0-1.38-1.382z"/>
+                                            </svg>
+                                        </a>
+                                    )}
+                                    {problem.externalLinks?.gfg && (
+                                        <a
+                                            href={problem.externalLinks.gfg}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            onClick={(e) => e.stopPropagation()}
+                                            className="p-2 bg-green-500/10 hover:bg-green-500/20 text-green-400 rounded-lg transition-all hover:scale-110"
+                                            title="GeeksforGeeks"
+                                        >
+                                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M21.45 17.98c-1.17.63-2.54.96-4.13.96-2.57 0-4.65-.81-6.09-2.44-1.44-1.63-2.16-3.79-2.16-6.49 0-2.7.72-4.86 2.16-6.49C12.67 1.89 14.75 1.08 17.32 1.08c1.59 0 2.96.33 4.13.96v3.28c-1.17-.81-2.46-1.21-3.87-1.21-1.59 0-2.88.54-3.87 1.62-.99 1.08-1.48 2.52-1.48 4.32 0 1.8.49 3.24 1.48 4.32.99 1.08 2.28 1.62 3.87 1.62 1.41 0 2.7-.4 3.87-1.21v3.2zM2.55 1.44h3.6v16.8h-3.6z"/>
+                                            </svg>
+                                        </a>
+                                    )}
+                                    {problem.videoUrl && (
+                                        <a
+                                            href={problem.videoUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            onClick={(e) => e.stopPropagation()}
+                                            className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg transition-all hover:scale-110"
+                                            title="YouTube"
+                                        >
+                                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                                            </svg>
+                                        </a>
+                                    )}
                                 </div>
                                 <div className="col-span-2 flex items-center">
                                     <span className={`${getDifficultyColor(problem.difficulty)} font-medium`}>
                                         {problem.difficulty}
                                     </span>
                                 </div>
-                                <div className="col-span-2 flex items-center text-gray-400">
-                                    {problem.acceptanceRate}%
-                                </div>
-                                <div className="col-span-2 flex items-center gap-2">
-                                    {problem.tags?.slice(0, 2).map((tag, i) => (
+                                <div className="col-span-3 flex items-center gap-2 flex-wrap">
+                                    {problem.tags?.slice(0, 3).map((tag, i) => (
                                         <span
                                             key={i}
                                             className="px-2 py-1 bg-white/5 rounded-md text-xs text-gray-400"
@@ -184,48 +225,6 @@ const ProblemsList = ({ onSelectProblem }) => {
                         ))}
                     </div>
                 )}
-            </motion.div>
-
-            {/* Stats */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4"
-            >
-                <div className="p-4 bg-[#1a1a1a]/40 backdrop-blur-sm border border-white/10 rounded-xl">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-green-500/10 rounded-lg">
-                            <CheckCircle2 className="w-5 h-5 text-green-400" />
-                        </div>
-                        <div>
-                            <p className="text-gray-400 text-sm">Solved</p>
-                            <p className="text-white text-xl font-bold">2</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="p-4 bg-[#1a1a1a]/40 backdrop-blur-sm border border-white/10 rounded-xl">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-yellow-500/10 rounded-lg">
-                            <Circle className="w-5 h-5 text-yellow-400" />
-                        </div>
-                        <div>
-                            <p className="text-gray-400 text-sm">Attempted</p>
-                            <p className="text-white text-xl font-bold">1</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="p-4 bg-[#1a1a1a]/40 backdrop-blur-sm border border-white/10 rounded-xl">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-blue-500/10 rounded-lg">
-                            <TrendingUp className="w-5 h-5 text-blue-400" />
-                        </div>
-                        <div>
-                            <p className="text-gray-400 text-sm">Acceptance Rate</p>
-                            <p className="text-white text-xl font-bold">66.7%</p>
-                        </div>
-                    </div>
-                </div>
             </motion.div>
         </div>
     );

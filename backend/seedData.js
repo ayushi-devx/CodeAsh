@@ -195,6 +195,65 @@ public class Solution {
         System.out.println();
     }
 }`
+      },
+      {
+        language: 'c',
+        code: `#include <stdio.h>
+#include <stdlib.h>
+
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
+    // Write your code here
+    // Example solution:
+    for (int i = 0; i < numsSize; i++) {
+        for (int j = i + 1; j < numsSize; j++) {
+            if (nums[i] + nums[j] == target) {
+                int* result = (int*)malloc(2 * sizeof(int));
+                result[0] = i;
+                result[1] = j;
+                *returnSize = 2;
+                return result;
+            }
+        }
+    }
+    *returnSize = 0;
+    return NULL;
+}
+
+int main() {
+    // Read input
+    int nums[10000];
+    int numsSize = 0;
+    int num;
+    
+    // Read numbers until newline
+    while (scanf("%d", &num) == 1) {
+        nums[numsSize++] = num;
+        char c = getchar();
+        if (c == '\\n') break;
+    }
+    
+    int target;
+    scanf("%d", &target);
+    
+    // Call function
+    int returnSize;
+    int* result = twoSum(nums, numsSize, target, &returnSize);
+    
+    // Print result
+    if (result != NULL && returnSize > 0) {
+        for (int i = 0; i < returnSize; i++) {
+            if (i > 0) printf(" ");
+            printf("%d", result[i]);
+        }
+        printf("\\n");
+        free(result);
+    }
+    
+    return 0;
+}`
       }
     ],
     hints: [
@@ -235,6 +294,7 @@ function twoSum(nums, target) {
 
 ### Why This Works
 The key insight is that for each number, we only need to check if its complement has been seen before. By storing numbers in a hash map as we go, we can do this check in O(1) time.`,
+    videoUrl: 'https://www.youtube.com/watch?v=UXDSeD9mN-k', // Striver's Two Sum video
     order: 1
   },
   {
@@ -287,6 +347,7 @@ You may assume the two numbers do not contain any leading zero, except the numbe
       'Remember to handle the carry when the sum of two digits is greater than 9.',
       'Think about what happens when one list is longer than the other.'
     ],
+    videoUrl: 'https://www.youtube.com/watch?v=LBVsXSzhHg8', // Striver's Add Two Numbers video
     order: 2
   },
   {
@@ -343,6 +404,7 @@ You may assume the two numbers do not contain any leading zero, except the numbe
       'Use a sliding window approach with two pointers.',
       'Use a hash set to track characters in the current window.'
     ],
+    videoUrl: 'https://www.youtube.com/watch?v=-zSxTJkcdAo', // Striver's Longest Substring video
     order: 3
   }
 ];

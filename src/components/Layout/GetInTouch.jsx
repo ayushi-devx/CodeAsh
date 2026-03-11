@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff } from 'lucide-react';
 import ConnectingScreen from './ConnectingScreen';
 import axios from 'axios';
+import { auth, googleProvider } from '../../config/firebase';
+import { signInWithPopup } from 'firebase/auth';
 
 const GetInTouch = () => {
     const [formData, setFormData] = useState({
@@ -80,9 +82,52 @@ const GetInTouch = () => {
         }
     };
 
-    const handleGoogleSignIn = () => {
+    const handleGoogleSignIn = async () => {
         console.log('Google sign in clicked');
-        alert('Google Sign-In coming soon! Please use email signup for now.');
+        setIsConnecting(true);
+        
+        try {
+            // Sign in with Google popup
+            const result = await signInWithPopup(auth, googleProvider);
+            const user = result.user;
+            
+            console.log('Google user:', user);
+            
+            // Send to backend
+            const response = await axios.post('http://localhost:5000/api/auth/google', {
+                email: user.email,
+                firstName: user.displayName || user.email.split('@')[0],
+                googleId: user.uid,
+                photoURL: user.photoURL
+            });
+            
+            if (response.data.success) {
+                // Save token and user data
+                localStorage.setItem('codeash_token', response.data.data.token);
+                localStorage.setItem('codeash_user', JSON.stringify({
+                    firstName: response.data.data.firstName,
+                    email: response.data.data.email,
+                    photoURL: response.data.data.photoURL,
+                    loginTime: new Date().toISOString()
+                }));
+                
+                // Show connecting screen then redirect
+                setTimeout(() => {
+                    setIsConnecting(false);
+                    window.location.href = '/dashboard';
+                }, 3500);
+            }
+        } catch (error) {
+            setIsConnecting(false);
+            console.error('Google sign-in error:', error);
+            
+            if (error.code === 'auth/popup-closed-by-user') {
+                // User closed popup, no need to show error
+                return;
+            }
+            
+            alert(error.response?.data?.message || 'Google sign-in failed. Please try again.');
+        }
     };
 
     const handleConnectingComplete = () => {

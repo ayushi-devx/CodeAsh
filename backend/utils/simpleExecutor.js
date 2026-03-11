@@ -25,7 +25,8 @@ async function ensureTempDir() {
 async function executeJavaScript(code, input) {
   await ensureTempDir();
   
-  const filename = `script_${Date.now()}_${Math.random().toString(36).substr(2, 9)}.js`;
+  // Use .cjs extension for CommonJS compatibility
+  const filename = `script_${Date.now()}_${Math.random().toString(36).substr(2, 9)}.cjs`;
   const filepath = path.join(TEMP_DIR, filename);
   
   try {
@@ -43,7 +44,7 @@ async function executeJavaScript(code, input) {
     await fs.writeFile(filepath, cleanCode);
     
     // Create input file
-    const inputFile = filepath.replace('.js', '_input.txt');
+    const inputFile = filepath.replace('.cjs', '_input.txt');
     await fs.writeFile(inputFile, input);
     
     const startTime = Date.now();
@@ -75,7 +76,7 @@ async function executeJavaScript(code, input) {
   } catch (error) {
     // Cleanup on error
     await fs.unlink(filepath).catch(() => {});
-    await fs.unlink(filepath.replace('.js', '_input.txt')).catch(() => {});
+    await fs.unlink(filepath.replace('.cjs', '_input.txt')).catch(() => {});
     
     if (error.killed) {
       return {
@@ -107,7 +108,16 @@ async function executePython(code, input) {
   const filepath = path.join(TEMP_DIR, filename);
   
   try {
-    await fs.writeFile(filepath, code);
+    // Fix quote escaping issues
+    let cleanCode = code;
+    cleanCode = cleanCode.replace(/\\\\"/g, '"');
+    cleanCode = cleanCode.replace(/\\\\'/g, "'");
+    cleanCode = cleanCode.replace(/\\\\n/g, '\n');
+    cleanCode = cleanCode.replace(/\\\\t/g, '\t');
+    cleanCode = cleanCode.replace(/\\"/g, '"');
+    cleanCode = cleanCode.replace(/\\'/g, "'");
+    
+    await fs.writeFile(filepath, cleanCode);
     
     const inputFile = filepath.replace('.py', '_input.txt');
     await fs.writeFile(inputFile, input);
@@ -162,6 +172,77 @@ async function executePython(code, input) {
   }
 }
 
+// Execute Go code
+async function executeGo(code, input) {
+  await ensureTempDir();
+  
+  const filename = `script_${Date.now()}_${Math.random().toString(36).substr(2, 9)}.go`;
+  const filepath = path.join(TEMP_DIR, filename);
+  
+  try {
+    let cleanCode = code;
+    cleanCode = cleanCode.replace(/\\\\"/g, '"');
+    cleanCode = cleanCode.replace(/\\\\'/g, "'");
+    cleanCode = cleanCode.replace(/\\\\n/g, '\n');
+    cleanCode = cleanCode.replace(/\\\\t/g, '\t');
+    cleanCode = cleanCode.replace(/\\"/g, '"');
+    cleanCode = cleanCode.replace(/\\'/g, "'");
+    
+    await fs.writeFile(filepath, cleanCode);
+    
+    const inputFile = filepath.replace('.go', '_input.txt');
+    await fs.writeFile(inputFile, input);
+    
+    const startTime = Date.now();
+    
+    const { stdout, stderr } = await execAsync(
+      `go run "${filepath}" < "${inputFile}"`,
+      {
+        timeout: 10000, // Go compilation takes more time
+        maxBuffer: 1024 * 1024
+      }
+    );
+    
+    const endTime = Date.now();
+    const executionTime = (endTime - startTime) / 1000;
+    
+    await fs.unlink(filepath).catch(() => {});
+    await fs.unlink(inputFile).catch(() => {});
+    
+    return {
+      stdout: stdout.trim(),
+      stderr: stderr.trim(),
+      time: executionTime.toFixed(3),
+      memory: 0,
+      status: { id: 3, description: 'Accepted' },
+      compile_output: null
+    };
+  } catch (error) {
+    await fs.unlink(filepath).catch(() => {});
+    await fs.unlink(filepath.replace('.go', '_input.txt')).catch(() => {});
+    
+    if (error.killed) {
+      return {
+        stdout: '',
+        stderr: 'Time Limit Exceeded',
+        time: '10.000',
+        memory: 0,
+        status: { id: 5, description: 'Time Limit Exceeded' },
+        compile_output: null
+      };
+    }
+    
+    return {
+      stdout: '',
+      stderr: error.stderr || error.message,
+      time: '0.000',
+      memory: 0,
+      status: { id: 11, description: 'Runtime Error' },
+      compile_output: null
+    };
+  }
+}
+
 // Main executor function
 export async function executeCode(code, language, input) {
   try {
@@ -170,10 +251,12 @@ export async function executeCode(code, language, input) {
         return await executeJavaScript(code, input);
       case 'python':
         return await executePython(code, input);
+      case 'go':
+        return await executeGo(code, input);
       default:
         return {
           stdout: '',
-          stderr: `Language ${language} not supported in simple executor`,
+          stderr: `Language ${language} not supported in simple executor. Use external Judge0 server.`,
           time: '0.000',
           memory: 0,
           status: { id: 13, description: 'Internal Error' },

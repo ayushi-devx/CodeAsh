@@ -39,6 +39,12 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 6
   },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true
+  },
+  photoURL: String,
   avatar: String,
   level: {
     type: String,
@@ -59,7 +65,11 @@ const userSchema = new mongoose.Schema({
       default: Date.now
     },
     language: String,
-    runtime: Number
+    runtime: Number,
+    difficulty: {
+      type: String,
+      enum: ['Easy', 'Medium', 'Hard']
+    }
   }],
   attemptedProblems: [{
     type: mongoose.Schema.Types.ObjectId,
@@ -70,7 +80,23 @@ const userSchema = new mongoose.Schema({
     ref: 'Problem'
   }],
   submissions: [submissionHistorySchema],
-  streakCount: {
+  battleRating: {
+    type: Number,
+    default: 1200
+  },
+  battlesPlayed: {
+    type: Number,
+    default: 0
+  },
+  battlesWon: {
+    type: Number,
+    default: 0
+  },
+  currentStreak: {
+    type: Number,
+    default: 0
+  },
+  longestStreak: {
     type: Number,
     default: 0
   },
@@ -116,7 +142,8 @@ userSchema.methods.updateStreak = function() {
   today.setHours(0, 0, 0, 0);
   
   if (!this.lastSolvedDate) {
-    this.streakCount = 1;
+    this.currentStreak = 1;
+    this.longestStreak = Math.max(this.longestStreak || 0, 1);
     this.lastSolvedDate = today;
     return;
   }
@@ -132,11 +159,12 @@ userSchema.methods.updateStreak = function() {
     return;
   } else if (diffDays === 1) {
     // Consecutive day
-    this.streakCount += 1;
+    this.currentStreak += 1;
+    this.longestStreak = Math.max(this.longestStreak || 0, this.currentStreak);
     this.lastSolvedDate = today;
   } else {
     // Streak broken
-    this.streakCount = 1;
+    this.currentStreak = 1;
     this.lastSolvedDate = today;
   }
 };

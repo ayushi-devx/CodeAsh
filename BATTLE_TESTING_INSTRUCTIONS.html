@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle Arena Testing Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.3em;
+            opacity: 0.9;
+        }
+        
+        .alert {
+            background: rgba(255, 59, 48, 0.2);
+            border: 2px solid #ff3b30;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .alert h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .steps-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .step-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .step-card h3 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .step-card .icon {
+            font-size: 1.5em;
+        }
+        
+        .step-list {
+            list-style: none;
+            counter-reset: step-counter;
+        }
+        
+        .step-list li {
+            counter-increment: step-counter;
+            margin-bottom: 15px;
+            padding-left: 40px;
+            position: relative;
+        }
+        
+        .step-list li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: rgba(255, 255, 255, 0.3);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .success-box {
+            background: rgba(52, 199, 89, 0.2);
+            border: 2px solid #34c759;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .success-box h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+        
+        .success-list {
+            list-style: none;
+        }
+        
+        .success-list li {
+            margin-bottom: 10px;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .success-list li::before {
+            content: "✅";
+            position: absolute;
+            left: 0;
+        }
+        
+        .error-box {
+            background: rgba(255, 59, 48, 0.2);
+            border: 2px solid #ff3b30;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .error-box h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+        
+        .error-list {
+            list-style: none;
+        }
+        
+        .error-list li {
+            margin-bottom: 10px;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .error-list li::before {
+            content: "❌";
+            position: absolute;
+            left: 0;
+        }
+        
+        .code-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .tip-box {
+            background: rgba(255, 204, 0, 0.2);
+            border: 2px solid #ffcc00;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .tip-box h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .steps-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Battle Arena Testing Guide</h1>
+            <p>Complete step-by-step instructions for testing multiplayer battles</p>
+        </div>
+        
+        <div class="alert">
+            <h2>🚨 CRITICAL: Authentication Required!</h2>
+            <p style="font-size: 1.2em; margin-top: 10px;">
+                You MUST login in BOTH browsers before testing!<br>
+                Without login, you'll get "401 Unauthorized" errors.
+            </p>
+        </div>
+        
+        <div class="steps-container">
+            <div class="step-card">
+                <h3><span class="icon">🖥️</span> Main Browser (Player 1)</h3>
+                <ul class="step-list">
+                    <li>Open <code>http://localhost:5174</code></li>
+                    <li>Login with Google (account1@gmail.com)</li>
+                    <li>Click "Game Room" in navbar</li>
+                    <li>Click "Room Match"</li>
+                    <li>Click "Create Room"</li>
+                    <li>Select difficulty (Easy/Medium/Hard)</li>
+                    <li>Click "Create Room"</li>
+                    <li>Copy room code (e.g., "ABC123")</li>
+                    <li>Wait for opponent...</li>
+                </ul>
+            </div>
+            
+            <div class="step-card">
+                <h3><span class="icon">🕵️</span> Incognito Browser (Player 2)</h3>
+                <ul class="step-list">
+                    <li>Open incognito window</li>
+                    <li>Go to <code>http://localhost:5174</code></li>
+                    <li><strong>Login with DIFFERENT account!</strong></li>
+                    <li>Click "Game Room"</li>
+                    <li>Click "Room Match"</li>
+                    <li>Click "Join Room"</li>
+                    <li>Enter room code from Player 1</li>
+                    <li>Click "Join Room"</li>
+                    <li>Battle starts! 🎮</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="success-box">
+            <h3>✅ What You Should See (Success)</h3>
+            <ul class="success-list">
+                <li>Both browsers show Battle Arena</li>
+                <li>Same problem displayed in both</li>
+                <li>Timer starts at 45:00</li>
+                <li>Can write code in Monaco editor</li>
+                <li>Can run tests and see results</li>
+                <li>Real-time opponent status updates</li>
+                <li>Can submit solution</li>
+                <li>Winner screen appears</li>
+                <li>ELO rating changes shown</li>
+            </ul>
+        </div>
+        
+        <div class="error-box">
+            <h3>❌ Common Mistakes</h3>
+            <ul class="error-list">
+                <li>Not logging in before testing</li>
+                <li>Using same account in both browsers</li>
+                <li>Forgetting to copy room code</li>
+                <li>Backend not running (port 5000)</li>
+                <li>Frontend not running (port 5174)</li>
+                <li>MongoDB not connected</li>
+            </ul>
+        </div>
+        
+        <div class="tip-box">
+            <h3>💡 Pro Tips</h3>
+            <ul>
+                <li><strong>Use Google Login:</strong> Faster than email signup</li>
+                <li><strong>Keep room code ready:</strong> Copy it immediately after creation</li>
+                <li><strong>Start with Easy:</strong> Test the flow with easy problems first</li>
+                <li><strong>Check backend logs:</strong> See real-time events in terminal</li>
+                <li><strong>Position windows side-by-side:</strong> Better testing experience</li>
+            </ul>
+        </div>
+        
+        <div class="step-card">
+            <h3>🔧 Quick Commands</h3>
+            <div class="code-box">
+                # Start Backend<br>
+                cd leet/codeash/backend<br>
+                npm start<br>
+                <br>
+                # Start Frontend (new terminal)<br>
+                cd leet/codeash<br>
+                npm run dev<br>
+                <br>
+                # Check Health<br>
+                curl http://localhost:5000/api/health
+            </div>
+        </div>
+        
+        <div class="step-card">
+            <h3>🔍 Debug Commands (Browser Console)</h3>
+            <div class="code-box">
+                // Check if logged in<br>
+                console.log(localStorage.getItem('codeash_token'));<br>
+                <br>
+                // Check user info<br>
+                console.log(JSON.parse(localStorage.getItem('codeash_user')));
+            </div>
+        </div>
+        
+        <div class="success-box" style="text-align: center; margin-top: 50px;">
+            <h3>🎊 Ready to Battle!</h3>
+            <p style="font-size: 1.2em; margin-top: 15px;">
+                Backend: 🟢 Port 5000<br>
+                Frontend: 🟢 Port 5174<br>
+                Auth: 🔑 Required<br>
+                <br>
+                <strong>Remember: LOGIN IN BOTH BROWSERS!</strong>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

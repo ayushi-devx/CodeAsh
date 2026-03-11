@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import DashboardNavbar from './DashboardNavbar';
 import ProblemsContainer from './Problems/ProblemsContainer';
+import ChatnCode from './ChatnCode/ChatnCode';
+import StreakDashboard from './Streak/StreakDashboard';
+import InterviewLanding from './Interview/InterviewLanding';
+import GameMode from './Battle/GameMode';
+import TypingRaceLobby from './TypingRace/TypingRaceLobby';
 
 const Dashboard = () => {
     const [user, setUser] = useState(null);
@@ -31,15 +36,15 @@ const Dashboard = () => {
             case 'problems':
                 return <ProblemsContainer />;
             case 'contest':
-                return <div className="text-white p-8">Contest section coming soon...</div>;
+                return <TypingRaceLobby />;
             case 'gameroom':
-                return <div className="text-white p-8">Game Room coming soon...</div>;
+                return <GameMode />;
             case 'chatncode':
-                return <div className="text-white p-8">ChatnCode coming soon...</div>;
+                return <ChatnCode />;
             case 'streak':
-                return <div className="text-white p-8">Streak Dashboard coming soon...</div>;
+                return <StreakDashboard />;
             case 'interview':
-                return <div className="text-white p-8">AI Interview Prep coming soon...</div>;
+                return <InterviewLanding />;
             default:
                 return <ProblemsContainer />;
         }

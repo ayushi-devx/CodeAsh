@@ -2,31 +2,33 @@
 
 A modern, production-ready coding platform built with MERN stack featuring real-time code execution, multi-language support, and comprehensive problem-solving features.
 
-## ⚠️ IMPORTANT: Judge0 Setup
+## ⚡ Quick Start
 
-### Local Docker Doesn't Work on Windows!
+### 1. Start Backend
+```bash
+cd backend
+npm start
+```
 
-Judge0 requires Linux cgroups which don't work in Docker Desktop on Windows. 
+### 2. Start Frontend
+```bash
+npm run dev
+```
 
-**Solution:** Use RapidAPI Judge0 (FREE & Easy)
+### 3. Open Browser
+```
+http://localhost:5174
+```
 
-### Quick Setup (5 minutes):
+## 🌐 Judge0 Configuration
 
-1. **Get RapidAPI Key:**
-   - Go to: https://rapidapi.com/judge0-official/api/judge0-ce
-   - Sign up & subscribe to Basic plan (FREE - 50 requests/day)
-   - Copy your API key
+This platform uses AWS EC2 Judge0 server for code execution:
+- **Server**: `http://100.53.209.86:2358`
+- **Languages**: 22+ programming languages
+- **Configuration**: See `backend/.env`
 
-2. **Update `backend/.env`:**
-   ```env
-   JUDGE0_LOCAL=false
-   JUDGE0_API_KEY=your_key_here
-   JUDGE0_API_URL=https://judge0-ce.p.rapidapi.com
-   ```
-
-3. **Start servers and test!**
-
-See `GET_RAPIDAPI_KEY.md` for detailed instructions.
+### Supported Languages:
+JavaScript, Python, Java, C++, C, C#, Go, Rust, Kotlin, Swift, TypeScript, PHP, Ruby, Scala, R, Perl, Lua, Haskell, Elixir, Clojure, Bash, SQL
 
 ---
 
@@ -70,10 +72,9 @@ See `GET_RAPIDAPI_KEY.md` for detailed instructions.
 - bcrypt
 
 ### Code Execution
-- Judge0 (Local Docker)
-- Redis
-- PostgreSQL
-- Multi-language support (JS, Python, C++, Java, C)
+- Judge0 (AWS EC2)
+- 22+ Programming Languages
+- Secure sandboxed execution
 
 ---
 
@@ -82,7 +83,6 @@ See `GET_RAPIDAPI_KEY.md` for detailed instructions.
 ### Prerequisites
 - Node.js 16+
 - MongoDB
-- Docker Desktop
 
 ### Setup
 
@@ -98,25 +98,20 @@ npm install
 ```bash
 cd backend
 cp .env.example .env
-# Edit .env with your MongoDB URI and JWT secret
+# Edit .env with your configuration:
+# - MongoDB URI
+# - JWT secret
+# - Judge0 URL (already configured for AWS)
 ```
 
-3. **Start Judge0**
+3. **Seed Database**
 ```bash
-cd ../judge0
-docker-compose up -d
-```
-
-4. **Seed Database**
-```bash
-cd ../backend
 node seedData.js
 ```
 
-5. **Start Servers**
+4. **Start Application**
 ```bash
 # Terminal 1 - Backend
-cd backend
 npm start
 
 # Terminal 2 - Frontend
@@ -124,7 +119,7 @@ cd ..
 npm run dev
 ```
 
-6. **Open Browser**
+5. **Open Browser**
 ```
 http://localhost:5174
 ```
@@ -133,24 +128,16 @@ http://localhost:5174
 
 ## 📚 Documentation
 
-- `JUDGE0_FIXED.md` - Judge0 fix details and testing
-- `RESTART_COMMANDS.md` - Quick command reference
-- `CURRENT_STATUS.md` - Full project status
+- `README.md` - This file (project overview)
 - `backend/README.md` - Backend API documentation
-- `judge0/REDIS_FIX.md` - Detailed troubleshooting
+- `backend/.env.example` - Environment variables template
 
 ---
 
 ## 🧪 Testing
 
-### Test Judge0
-```bash
-node test-judge0-fixed.js
-```
-
 ### Test Backend
 ```bash
-curl http://localhost:5000/api/health
 curl http://localhost:5000/api/problems
 ```
 
@@ -170,6 +157,7 @@ leet/codeash/
 ├── src/
 │   ├── components/
 │   │   ├── Layout/          # Landing page components
+│   │   ├── Intro/           # Intro sequence
 │   │   └── Dashboard/       # Dashboard & Problems
 │   ├── App.jsx
 │   └── main.jsx
@@ -178,10 +166,8 @@ leet/codeash/
 │   ├── controllers/         # Business logic
 │   ├── routes/              # API routes
 │   ├── middleware/          # Auth middleware
+│   ├── utils/               # Utilities
 │   └── server.js
-├── judge0/
-│   ├── docker-compose.yml   # ✅ Fixed
-│   └── judge0.conf
 └── package.json
 ```
 
@@ -205,75 +191,42 @@ leet/codeash/
 
 ## 🐛 Troubleshooting
 
-### Judge0 Issues
-```bash
-# Check containers
-docker ps
-
-# View logs
-docker logs judge0
-docker logs judge0-redis
-
-# Restart
-cd judge0
-docker-compose restart
-```
-
 ### Backend Issues
 ```bash
 # Check MongoDB connection
-# Check .env file
-# Verify port 5000 is free
+# Verify .env configuration
+# Ensure port 5000 is available
 ```
 
 ### Frontend Issues
 ```bash
-# Clear node_modules
+# Clear cache and reinstall
 rm -rf node_modules
 npm install
 
-# Check port 5174 is free
+# Ensure port 5174 is available
 ```
+
+### Judge0 Issues
+- Verify AWS Judge0 server is accessible
+- Check `backend/.env` for correct JUDGE0_URL
+- Test connection: `curl http://100.53.209.86:2358/about`
 
 ---
 
 ## 🎉 Success Criteria
 
-✅ Judge0 containers running
 ✅ Backend API responding
 ✅ Frontend loading
 ✅ User can register/login
 ✅ Problems list showing
 ✅ Code editor working
+✅ Code execution via AWS Judge0
 ✅ Test cases passing
 ✅ Submissions saving
 
 ---
 
-## 📝 Next Steps
+**Status:** ✅ Production Ready!
 
-1. Test all features in browser
-2. Add more problems
-3. Implement Contest section
-4. Build Game Room
-5. Create ChatnCode
-6. Add Streak Dashboard
-7. Develop AI Interview Prep
-
----
-
-## 🤝 Contributing
-
-This is a learning project. Feel free to explore and modify!
-
----
-
-## 📄 License
-
-MIT
-
----
-
-**Status:** ✅ Judge0 Fixed - Ready to Use!
-
-**Last Updated:** After Redis authentication fix
+**Last Updated:** January 2024

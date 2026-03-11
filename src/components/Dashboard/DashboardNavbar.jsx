@@ -25,7 +25,7 @@ const DashboardNavbar = ({ user, activeSection, onSectionChange }) => {
 
     const navItems = [
         { id: 'problems', label: 'Problems', icon: Code2 },
-        { id: 'contest', label: 'Contest', icon: Trophy },
+        { id: 'contest', label: 'Typing Race', icon: Trophy },
         { id: 'gameroom', label: 'Game Room', icon: Gamepad2 },
         { id: 'chatncode', label: 'ChatnCode', icon: MessageSquareCode },
         { id: 'streak', label: 'Streak Dashboard', icon: Flame },
